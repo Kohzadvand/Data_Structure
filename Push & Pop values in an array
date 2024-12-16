@@ -1,0 +1,101 @@
+#include <iostream>                                                   
+
+class Stack
+{
+    private :
+    
+    int *stack;
+    int top;
+    int maxSize;
+    
+    public :
+    Stack(int size)
+    {
+        maxSize = size;
+        stack = new int[maxSize];
+        top = -1;
+    }
+    
+    bool isFull()
+    {
+        return(top == maxSize - 1);
+    }
+    
+    bool isEmpty()
+    {
+        return(top == -1);
+    }
+    
+    void push(short value)
+    {
+        if(isFull())
+        {
+            std::cout << "! ERROR !" << std::endl << "  STACK OVERFLOW  " << std::endl;
+            exit(0);
+        }
+               stack[++top] = value;
+               std::cout << value << " has been pushed to stack." << std::endl;
+    }
+    
+    short pop()
+    {
+        if(isEmpty())
+        {
+            std::cout <<  "! ERROR !" << std::endl << "  STACK IS ALREADY EMPLTY  " << std::endl;
+            return -1;
+        }
+        short value = stack[top--];
+        std::cout << value << " has been popped from stack" << std::endl;
+        return value;
+    }
+    
+    void display()
+    {
+        if(isEmpty())
+        {
+            std::cout << "stack is empty !" << std::endl;
+            exit(0);
+        }
+      //  std::cout << "stack elements are : " << std::endl;
+        for(short i = 0; i <= top; i++)
+        {
+            std::cout << stack[i] << ' ';
+        }
+        std::cout << std::endl;
+    }
+    
+};
+
+
+
+int main() 
+{
+    std::cout << "Enter the array size please" << std::endl;                                                              
+    short size;
+    std::cin >> size;
+    
+    std::cout << "Enter the arrays Value" << std::endl;
+    short array[size];
+    for(short i = 0; i < size; i++)
+    {
+        std::cin >> array[i];
+    }
+    
+    Stack stack(size);
+    
+    for(short i = 0; i < size; i++)
+    {
+        stack.push(array[i]);
+    }
+    
+    std::cout << "all pushed elements are : " << std::endl;
+    stack.display();
+    
+    std::cout << "poping all elements from stack : " << std::endl;
+    while(!stack.isEmpty())
+    {
+        stack.pop();
+    }
+    
+    return 0;
+}
