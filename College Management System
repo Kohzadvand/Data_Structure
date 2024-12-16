@@ -1,0 +1,576 @@
+#include <iostream>
+#include <string>
+#include <cctype>
+                                                                                                                                                                                                      
+// CODE BELOW : storing student courses informations 
+struct Course
+{
+    std::string course_name;
+    short course_code;
+    std::string class_date;
+    std::string test_date;
+    
+    Course* next;
+};
+//-----------------------------------------------------------------------
+// CODE BELOW : storing students informations
+struct Student
+{
+    short id;
+    std::string name;
+    std::string family;
+    std::string major;
+    short year;
+    short semester;
+    
+    Course* course_list;
+    Student* next;
+};
+//-----------------------------------------------------------------------
+struct Course_catalog
+{
+    Course* first = nullptr;
+      
+      bool is_empty() // check if list is empty or not
+      {
+          return first == nullptr;
+      }
+      //-----------------------------------------------------------------
+       void error()
+       {
+           std::cout << std::endl;
+           std::cout << "!!  ERROR  !!" << std::endl;
+           std::cout << "... COURSE LIST IS EMPTY ..." << std::endl;
+           std::cout << std::endl;
+       }
+      //-----------------------------------------------------------------
+      void add_course_to_catalog()
+      {
+          Course* new_course = new Course;
+          
+          std::cout << std::endl << "Adding new course to catalog : " << std::endl;
+          std::cout << "1.Enter course name : ";
+          std::getline(std::cin >> std::ws, new_course->course_name);
+          
+          std::cout << "2.Enter course code : ";
+          std::cin >> new_course->course_code;
+          
+          std::cout << "3.Enter date of class : (e.g. sunday,monday,...)";
+          std::getline(std::cin >> std::ws, new_course->class_date);
+          
+          std::cout << "4.Enter date of test : (e.g. 1402/10/22)";
+          std::getline(std::cin >> std::ws, new_course->test_date);
+          
+          new_course->next = nullptr;
+          
+            if(first == nullptr)
+            {
+                first = new_course;
+            }
+               else
+               {
+                   Course* p = first;
+                     while(p->next != nullptr)
+                     {
+                         p = p->next;
+                     }
+                   p->next = new_course;
+               }
+          std::cout << std::endl << "Course added to catalog successfuly" << std::endl << std::endl;
+      }
+      //-----------------------------------------------------------------
+      void display_courses()
+      {
+          if(is_empty())
+          {
+              error();
+              return;
+          }
+          
+          Course* p = first;
+          short index{1};
+          std::cout << "Available courses : " << std::endl;
+            while(p != nullptr)
+            {
+                std::cout << index << ". " << p->course_name << std::endl;
+                std::cout << "Code : " << p->course_code << std::endl;
+                std::cout << "Date of class : " << p->class_date << std::endl;
+                std::cout << "Date of test : " << p->test_date << std::endl << std::endl;
+                index++;
+                p = p->next;
+            }
+      }
+      //-----------------------------------------------------------------
+      Course* find_course(short code)
+      {
+          Course* p = first;
+            while(p != nullptr)
+            {
+                if(p->course_code == code)
+                {
+                    return p;
+                }
+                p = p->next;
+            }
+          return nullptr;
+      }
+};
+//-----------------------------------------------------------------------
+// CODE BELOW : managing the students
+struct Student_Manager
+{
+    Student* first = nullptr; // storing the first student’s data in the list
+    
+      bool is_empty() // check if list is empty or not
+      {
+          return first == nullptr;
+      }
+      //-----------------------------------------------------------------
+       void error()
+       {
+           std::cout << std::endl;
+           std::cout << "!!  ERROR  !!" << std::endl;
+           std::cout << "... STUDENT LIST IS EMPTY ..." << std::endl;
+           std::cout << std::endl;
+       }
+      //-----------------------------------------------------------------
+      void add_Student()
+      {
+          Student* new_student = new Student;
+          
+          std::cout << "Adding new student to the list : " << std::endl;
+          std::cout << "1.Enter student ID : ";
+          std::cin >> new_student->id;
+          
+          std::cout << "2.Enter student first name : ";
+          std::getline(std::cin >> std::ws, new_student->name);
+          
+          std::cout << "3.Enter student last name : ";
+          std::getline(std::cin >> std::ws, new_student->family);
+          
+          std::cout << "4.Enter student major : ";
+          std::getline(std::cin >> std::ws, new_student->major);
+          
+          std::cout << "5.Enter year of entry : ";
+          std::cin >> new_student->year;
+          
+          std::cout << "6.Enter current semester : ";
+          std::cin >> new_student->semester;
+          
+          new_student->course_list = nullptr;
+          new_student->next = nullptr;
+          
+              if(is_empty())
+              {
+                  first = new_student;
+              }
+                 else
+                 {
+                     Student* p = first;
+                         while(p->next != nullptr)
+                         {
+                             p = p->next;
+                         }
+                     p->next = new_student;
+                 }
+          
+          std::cout << std::endl << "student added successfuly." << std::endl << std::endl;
+      }
+      //-----------------------------------------------------------------
+      void display_student_information()
+      {
+          if(is_empty())
+          {
+              error();
+              return;
+          }
+          
+          Student* p = first;
+          short index{1};
+          std::cout << "List of students : " << std::endl;
+              while(p != nullptr)
+              {
+                  std::cout << std::endl;
+                  std::cout << "Student number " << index << " : " << std::endl;
+                  std::cout << "ID : " << p->id << std::endl;
+                  std::cout << "First name : " << p->name << std::endl;
+                  std::cout << "Last nane : " << p->family << std::endl;
+                  std::cout << "Major : " << p->major << std::endl;
+                  std::cout << "Entry year : " << p->year << std::endl;
+                  std::cout << "Current semester : " << p->semester << std::endl << std::endl;
+                  
+                  Course* q = p->course_list;
+                  if(q == nullptr)
+                  {
+                      std::cout << "student has not selected any course for the current semester." << std::endl;
+                  }
+                     else
+                     {
+                         std::cout << "Selected course : " << std::endl;
+                         
+                           while(q != nullptr)
+                           {
+                               std::cout << "_ " << q->course_name << "(Code : " << q->course_code << " )" << std::endl;
+                               q = q->next;
+                           }
+                     }
+                  
+                  std::cout << std::endl;
+                  
+                  index++;
+                  p = p->next;
+              }
+      }
+      //-----------------------------------------------------------------
+      void find_student(Student*& searched_student)   // searching for a student in the list
+      {
+          std::cout << "Enter the student ID you want to delete : ";
+          short searched_id;
+          std::cin >> searched_id;
+          
+          if(is_empty())
+          {
+              error();
+              return;
+          }
+             else
+             {
+                 Student* p = first;
+                    while(p != nullptr)
+                    {
+                        if(p->id == searched_id)
+                        {
+                            searched_student = p;
+                            return;
+                        }
+                        p = p->next;
+                    }
+                 std::cout << std::endl << "!  No student found with this ID  !" << std::endl << std::endl;
+                 return;
+             }
+      }
+      //-----------------------------------------------------------------
+      void delete_student()
+      {
+          Student* considered_student = nullptr;
+          
+          find_student(considered_student);
+          
+          if(considered_student == nullptr)
+          {
+              return;
+          }
+          
+          Course* course = considered_student->course_list;
+            while(course != nullptr)
+            {
+                Course* q = course;
+                course = course->next;
+                delete q;
+            }
+          
+          if(considered_student == first)
+          {
+              first = first->next;
+          }
+             else
+             {
+                 Student* p = first;
+                   while(p->next != considered_student)
+                   {
+                       p = p->next;
+                   }
+                 p->next = considered_student->next;
+             }
+          delete considered_student;
+          std::cout << std::endl << "Student has been deleted successfuly." << std::endl;
+      }
+      //-----------------------------------------------------------------
+      Course* create_course(Course* source)
+      {
+          Course* new_course = new Course;
+          
+          new_course->course_name = source->course_name;
+          new_course->course_code = source->course_code;
+          new_course->class_date = source->class_date;
+          new_course->test_date = source->test_date;
+          new_course->next = nullptr;
+          
+          return new_course;
+      }
+      //-----------------------------------------------------------------
+    Course_catalog catalog;
+    
+      void add_to_course_list(Student* considered_student)
+      {
+          catalog.display_courses();
+          
+          std::cout << "Enter course code to select : " << std::endl;
+          short selected_code;
+          std::cin >> selected_code;
+          
+          Course* selected_course = catalog.find_course(selected_code);
+          
+          if(selected_course == nullptr)
+          {
+              std::cout << std::endl << "No course found with this code" << std::endl << std::endl;
+              return;
+          }
+          
+          Course* new_course = create_course(selected_course);
+          
+          if(considered_student->course_list == nullptr)
+          {
+              considered_student->course_list = new_course;
+          }
+             else
+             {
+                 Course* p = considered_student->course_list;
+                   while(p->next != nullptr)
+                   {
+                       p = p->next;
+                   }
+                 p->next = new_course;
+             }
+          std::cout << std::endl << "Course added to " << considered_student->name << ' ' << considered_student->family << "'s course list succussfuly" << std::endl << std::endl;
+      }
+      //-----------------------------------------------------------------
+      void delete_from_course_list(Student* considered_student)
+      {
+          if(considered_student->course_list == nullptr)
+          {
+              std::cout << std::endl << "Student has no courses to delete!" << std::endl << std::endl;
+              return;
+          }
+          
+          Course* q = considered_student->course_list;
+          std::cout << "Current courses : " << std::endl;
+          short index{1};
+             while(q != nullptr)
+             {
+                 std::cout << index << ". " << q->course_name << "(Code: " << q->course_code << ")" << std::endl;
+                 q = q->next;
+                 index++;
+             }
+          
+          std::cout << "Enter course code to delete : ";
+          short code;
+          std::cin >> code;
+          
+          Course* p = considered_student->course_list;
+          Course* pre_p = nullptr;
+             while(p != nullptr && p->course_code != code)
+             {
+                 pre_p = p;
+                 p = p->next;
+             }
+          
+          if(p == nullptr)
+          {
+              std::cout << std::endl << "No course found with this code!" << std::endl << std::endl;
+              return;
+          }
+          
+          if(pre_p == nullptr)
+          {
+              considered_student->course_list = p->next;
+          }
+            else
+            {
+                pre_p->next = p->next;
+            }
+          
+          delete p;
+          std::cout << std::endl << "Course deleted successfully" << std::endl << std::endl;
+      }
+      //-----------------------------------------------------------------
+      void manage_student_courses()
+      {
+          if(is_empty())
+          {
+              error();
+              return;
+          }
+          
+          Student* considered_student = nullptr;
+          find_student(considered_student);
+          
+          if(considered_student == nullptr)
+          {
+              return;
+          }
+          
+             while(true)
+             {
+                 std::cout << std::endl << "Course Management Menu for " << considered_student->name << " " << considered_student->family << "(ID: " << considered_student->id << ")" << std::endl;
+                 std::cout << "1. Add a new course" << std::endl;
+                 std::cout << "2. Delete course" << std::endl;
+                 std::cout << "3. Display current courses" << std::endl;
+                 std::cout << "4. Return to main menu" << std::endl;
+                 
+                 std::cout << "Enter your choice (1-4) : ";
+                 short choice;
+                 std::cin >> choice;
+                 
+                    switch(choice)
+                    {
+                        case 1:
+                            add_to_course_list(considered_student);
+                            break;
+                        
+                        case 2:
+                            delete_from_course_list(considered_student);
+                            break;
+                        
+                        case 3:
+                            if(considered_student->course_list == nullptr)
+                            {
+                                std::cout << std::endl << "No courses selected yet" << std::endl;
+                            }
+                               else
+                               {
+                                   Course* p = considered_student->course_list;
+                                   std::cout << std::endl << "Current courses : " << std::endl;
+                                      while(p != nullptr)
+                                      {
+                                          std::cout << "_ " << p->course_name << "(Code: " << p->course_code << ", Class: " << p->class_date <<  ", Test: " << p->test_date << ")" << std::endl;
+                                          p = p->next;
+                                      }
+                               }
+                            break;
+                        
+                        case 4:
+                            return;
+                        
+                        default:
+                            std::cout << "Invalid choice! Please try again." << std::endl;
+                    }
+             }
+      }
+      //-----------------------------------------------------------------
+      void student_course_selection()
+      {
+          if(is_empty())
+          {
+              error();
+              return;
+          }
+          
+          Student* considered_student = nullptr;
+          find_student(considered_student);
+          
+          if(considered_student == nullptr)
+          {
+              return;
+          }
+          
+          std::cout << std::endl << "Course selection : " << std::endl;
+             do
+             {
+                 add_to_course_list(considered_student);
+                 
+                 std::cout << "Do you want to add another course? (y/n)";
+                 char input;
+                 std::cin >> input;
+                    if(input == 'y')
+                    {
+                        continue;
+                    }
+                       else
+                       {
+                           break;
+                       }
+             }while(true);
+      }
+};
+//-----------------------------------------------------------------------
+void display_menu()
+{
+    Student_Manager manager;
+    char choice;
+    
+    do
+    {
+        std::cout << "\n========== Student Management System ==========\n";
+        std::cout << "1. Course Catalog Management\n";
+        std::cout << "   a. Add new course to catalog\n";
+        std::cout << "   b. Display all available courses\n";
+        std::cout << "\n";
+        std::cout << "2. Student Management\n";
+        std::cout << "   c. Add new student\n";
+        std::cout << "   d. Delete student\n";
+        std::cout << "   e. Display all students information\n";
+        std::cout << "\n";
+        std::cout << "3. Course Management\n";
+        std::cout << "   f. Course selection for a student\n";
+        std::cout << "   g. Manage student courses (Add/Delete/Display)\n";
+        std::cout << "\n";
+        std::cout << "4. Exit Program (x)\n";
+        std::cout << "============================================\n";
+        std::cout << "Enter your choice: ";
+        
+        std::cin >> choice;
+        
+        switch(tolower(choice))
+        {
+            case 'a':
+                manager.catalog.add_course_to_catalog();
+                break;
+                
+            case 'b':
+                manager.catalog.display_courses();
+                break;
+                
+            case 'c':
+                manager.add_Student();
+                break;
+                
+            case 'd':
+                manager.delete_student();
+                break;
+                
+            case 'e':
+                manager.display_student_information();
+                break;
+                
+            case 'f':
+                manager.student_course_selection();
+                break;
+                
+            case 'g':
+                manager.manage_student_courses();
+                break;
+                
+            case 'x':
+                std::cout << "\nExiting program. Goodbye!\n";
+                return;
+                
+            default:
+                std::cout << "\nInvalid choice! Please try again.\n";
+        }
+        
+        std::cout << "\nPress Enter to continue...";
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cin.get();
+
+        // Print blank lines to simulate clearing the screen
+        for (int i = 0; i < 50; ++i)
+            std::cout << "\n";
+        
+    } while(true);
+}
+//-----------------------------------------------------------------------
+int main() {
+    display_menu();
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
